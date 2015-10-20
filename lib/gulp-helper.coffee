@@ -1,13 +1,20 @@
 GulpHelperView = require './gulp-helper-view'
 
 module.exports =
-  gulpHelperView: null
+    gulpHelperView: null
 
-  activate: (state) ->
-    @gulpHelperView = new GulpHelperView(state.gulpHelperViewState)
+    config:
+        runCommand:
+            title: 'Gulp task'
+            description: 'Gulp task that will be executed on launch.'
+            type: 'string'
+            default: 'default'
 
-  deactivate: ->
-    @gulpHelperView.destroy()
+    activate: (state) ->
+        @gulpHelperView = new GulpHelperView(state.gulpHelperViewState)
 
-  serialize: ->
-    gulpHelperViewState: @gulpHelperView.serialize()
+    deactivate: ->
+        @gulpHelperView.destroy()
+
+    serialize: ->
+        gulpHelperViewState: @gulpHelperView.serialize()

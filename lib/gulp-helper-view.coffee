@@ -6,11 +6,10 @@ module.exports =
 class GulpHelperView extends View
   processes = {}
   command = if process.platform == 'win32' then 'gulp' else '/usr/local/bin/gulp'
-  args = ['watch', '--color']
+  args = ['--color']
   @content: ->
     @div =>
       @div class: "gulp-helper tool-panel panel-bottom", outlet: 'Panel', =>
-        @div class: "panel-heading affix", 'Gulp Output'
         @div class: "panel-body padded", outlet: 'MessageArea'
 
   initialize: (serializeState) ->
