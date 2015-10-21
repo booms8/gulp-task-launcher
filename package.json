@@ -3,13 +3,13 @@
   "main": "./lib/gulp-helper",
   "version": "5.0.0",
   "private": true,
-  "description": "Runs gulp watch on your project directory and displays the output!",
+  "description": "Runs the default task of the project's gulpfile.",
   "activationCommands": {
     "atom-workspace": [
       "gulp-helper:toggle"
     ]
   },
-  "repository": "https://github.com/kenwheeler/gulp-helper",
+  "repository": "https://github.com/booms8/gulp-helper",
   "license": "MIT",
   "engines": {
     "atom": "~1.0.0"
