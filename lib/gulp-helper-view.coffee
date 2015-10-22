@@ -33,6 +33,7 @@ class GulpHelperView extends View
     command = 'gulp'
     args = [atom.config.get('gulp-helper.runCommand'), '--color']
     @MessageArea.html('<div>Starting gulp...</div>')
+    @MessageArea.append "<div class='text-highighted'>#{command} #{args[0]}</div>"
 
     for projectPath in atom.project.getPaths()
       do (projectPath) =>
@@ -58,7 +59,7 @@ class GulpHelperView extends View
   gulpOut: (output, projectPath) =>
     for line in output.split("\n").filter((lineRaw) -> lineRaw isnt '')
       stream = converter.toHtml(line);
-      @MessageArea.append "<div class='text-highighted'><span class='folder-name'>#{projectPath}</span> #{stream}</div>"
+      @MessageArea.append "<div class='text-highighted'>#{stream}</div>"
     @setScroll()
 
   gulpErr: (code, projectPath) =>
