@@ -35,25 +35,30 @@ class GulpHelperView extends View
     @MessageArea.html('<div>Starting gulp...</div>')
     @MessageArea.append "<div class='text-highighted'>#{command} #{args[0]}</div>"
 
-    for projectPath in atom.project.getPaths()
-      do (projectPath) =>
-        options = {
-            cwd: projectPath
-        }
+    projectPath = atom.config.get('gulp-helper.gulpPath')
 
-        #projectPathName = projectPath.split(path.sep).filter((path) -> path isnt '').pop()
-        projectPathName = projectPath.split('/').pop()
-        @MessageArea.append "<div class='text-highighted'>#{projectPath} #{projectPathName}</div>"
+    #for projectPath in atom.project.getPaths()
+      #do (projectPath) =>
 
-        stdout = (output) => @gulpOut(output, projectPathName)
-        stderr = (code) => @gulpErr(code, projectPathName)
-        exit = (code) => @gulpErr(code, projectPathName)
+    testPath = atom.config.get('gulp-helper.gulpPath')
+    @MessageArea.append "<div class='text-highighted'>#{testPath}</div>"
 
-        newProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
-        newProcess.onWillThrowError (error) =>
-          @MessageArea.append "<div class='text-error'><span class='folder-name'>#{projectPathName}</span> Error starting gulp process: #{error.error.message}</div>"
-          error.handle()
-        processes[projectPath] = newProcess;
+    #if atom.project.getPaths().indexOf(testPath) is -1
+      #projectPath = testPath
+
+    options = {
+        cwd: projectPath
+    }
+
+    stdout = (output) => @gulpOut(output, projectPath)
+    stderr = (code) => @gulpErr(code, projectPath)
+    exit = (code) => @gulpErr(code, projectPath)
+
+    newProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
+    newProcess.onWillThrowError (error) =>
+      @MessageArea.append "<div class='text-error'><span class='folder-name'>#{projectPath}</span> Error starting gulp process: #{error.error.message}</div>"
+      error.handle()
+    processes[projectPath] = newProcess;
 
   setScroll: =>
     @Panel.scrollTop(@Panel[0].scrollHeight)
