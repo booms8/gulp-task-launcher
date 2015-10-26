@@ -41,7 +41,9 @@ class GulpHelperView extends View
             cwd: projectPath
         }
 
-        projectPathName = projectPath.split(path.sep).filter((path) -> path isnt '').pop()
+        #projectPathName = projectPath.split(path.sep).filter((path) -> path isnt '').pop()
+        projectPathName = projectPath.split('/').pop()
+        @MessageArea.append "<div class='text-highighted'>#{projectPath} #{projectPathName}</div>"
 
         stdout = (output) => @gulpOut(output, projectPathName)
         stderr = (code) => @gulpErr(code, projectPathName)
