@@ -1,15 +1,15 @@
 {
-  "name": "gulp-helper",
-  "main": "./lib/gulp-helper",
+  "name": "gulp-task-launcher",
+  "main": "./lib/gulp-task-launcher",
   "version": "5.0.0",
   "private": true,
   "description": "Runs the default task of the project's gulpfile.",
   "activationCommands": {
     "atom-workspace": [
-      "gulp-helper:toggle"
+      "gulp-task-launcher:toggle"
     ]
   },
-  "repository": "https://github.com/booms8/gulp-helper",
+  "repository": "https://github.com/booms8/gulp-task-launcher",
   "license": "MIT",
   "engines": {
     "atom": "~1.0.0"

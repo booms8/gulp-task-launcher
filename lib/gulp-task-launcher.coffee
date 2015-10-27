@@ -1,7 +1,7 @@
-GulpHelperView = require './gulp-helper-view'
+gulpTaskLauncherView = require './gulp-task-launcher-view'
 
 module.exports =
-    gulpHelperView: null
+    gulpTaskLauncherView: null
 
     config:
         runCommand:
@@ -16,10 +16,10 @@ module.exports =
             default: atom.project.getPaths()[0]
 
     activate: (state) ->
-        @gulpHelperView = new GulpHelperView(state.gulpHelperViewState)
+        @gulpTaskLauncherView = new gulpTaskLauncherView(state.gulpTaskLauncherViewState)
 
     deactivate: ->
-        @gulpHelperView.destroy()
+        @gulpTaskLauncherView.destroy()
 
     serialize: ->
-        gulpHelperViewState: @gulpHelperView.serialize()
+        gulpTaskLauncherViewState: @gulpTaskLauncherView.serialize()
