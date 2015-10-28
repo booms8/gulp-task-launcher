@@ -32,21 +32,23 @@ class GulpHelperView extends View
   runGulp: ->
     command = 'gulp'
     args = [atom.config.get('gulp-task-launcher.runCommand'), '--color']
-    @MessageArea.html('<div>Starting gulp...</div>')
-    @MessageArea.append "<div class='text-highighted'>#{command} #{args[0]}</div>"
+    @MessageArea.append "<div class='text-highighted'>Starting #{command} #{args[0]}...</div>"
 
     gulpPath = atom.config.get('gulp-task-launcher.gulpPath')
+    if !gulpPath or !gulpPath.length
+      @MessageArea.append "<div class='text-error'>No project path found!</div>"
+
     options = {
         cwd: gulpPath
     }
 
     stdout = (output) => @gulpOut(output, gulpPath)
     stderr = (code) => @gulpErr(code, gulpPath)
-    exit = (code) => @gulpErr(code, gulpPath)
+    exit = (code) => @gulpExit(code, gulpPath)
 
     newProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
     newProcess.onWillThrowError (error) =>
-      @MessageArea.append "<div class='text-error'><span class='folder-name'>#{gulpPath}</span> Error starting gulp process: #{error.error.message}</div>"
+      @MessageArea.append "<div class='text-error'>Error starting gulp process: #{error.error.message}</div>"
       error.handle()
     processes[gulpPath] = newProcess;
 
@@ -60,12 +62,13 @@ class GulpHelperView extends View
     @setScroll()
 
   gulpErr: (code, gulpPath) =>
-    if code isnt 0
-      @MessageArea.append "<div class='text-error'><span class='folder-name'>#{gulpPath}</span> Error Code: #{code}</div>"
-      @setScroll()
-    else
-      @MessageArea.append "<div class='text-highighted'>Exited with code 0</div>"
+    @MessageArea.append "<div class='text-error'>Error Code: #{code}</div>"
+    @setScroll()
 
   gulpExit: (code, gulpPath) =>
-    @MessageArea.append "<div class='text-error'><span class='folder-name'>#{gulpPath}</span> Exited with error code: #{code}</div>"
-    @setScroll()
+    if code isnt 0
+      @MessageArea.append "<div class='text-error'>Exited with error code: #{code}</div>"
+      @setScroll()
+    else
+      @MessageArea.append "<div class='text-highighted'>Exited normally</div>"
+      @setScroll()
