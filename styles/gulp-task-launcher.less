@@ -6,16 +6,46 @@
 
 .gulp-task-launcher {
   height: 200px;
-  overflow-y: scroll;
-  .panel-body {
-    div {
-      margin: 5px;
+
+  .messages,
+  .tasks {
+    float: left;
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  .tasks {
+    overflow-y: scroll;
+    width: 25%;
+    float: left;
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+
+    .task {
+      cursor: pointer;
+      padding: 5px;
+
+      &:hover,
+      &.running {
+        background: @button-background-color;
+        color: @text-color-highlight;
+      }
     }
-    .folder-name {
-      font-weight: 900;
-    }
-    .text-highighted {
-      color: @text-color;
-    }
+  }
+
+  .messages {
+      width: 75%;
+
+      div {
+        margin: 5px;
+      }
+      .text-highighted {
+        color: @text-color;
+
+        &.start {
+            margin-top: 15px;
+        }
+      }
   }
 }
