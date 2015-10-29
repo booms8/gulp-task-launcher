@@ -41,8 +41,7 @@ class GulpHelperView extends View
           process.kill()
     else
       atom.workspace.addBottomPanel item: this
-      @getGulpTasks()
-      if atom.config.get ('gulp-task-launcher.useDefault')
+      if not @getGulpTasks() and atom.config.get ('gulp-task-launcher.useDefault')
         @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
 
   getGulpCwd: (cwd) ->
@@ -76,7 +75,6 @@ class GulpHelperView extends View
       return
 
     @MessageArea.append "<div class='text-highighted'>Using #{@gulpCwd}/#{@gulpFile}</div>"
-    @MessageArea.append "<div class='text-highighted'>Retrieving list of gulp tasks</div>"
 
     onOutput = (output) =>
       for task in output.split('\n') when task.length

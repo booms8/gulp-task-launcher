@@ -3,7 +3,7 @@
   "main": "./lib/gulp-task-launcher",
   "version": "0.1.4",
   "private": true,
-  "description": "Runs a specified task in the project's gulpfile.",
+  "description": "Allows manual/automatic execution of gulp tasks.",
   "activationCommands": {
     "atom-workspace": [
       "gulp-task-launcher:toggle"
