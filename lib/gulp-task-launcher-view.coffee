@@ -142,4 +142,5 @@ class GulpHelperView extends View
     else
       @MessageArea.append "<div class='text-highighted'>Exited normally</div>"
       @setScroll()
+    @find(".tasks li.task.running").removeClass 'running'
     return
