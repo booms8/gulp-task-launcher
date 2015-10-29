@@ -29,6 +29,9 @@ class GulpHelperView extends View
 
   destroy: ->
     @detach()
+    for gulpPath, process of processes
+      if process
+        process.kill()
 
   toggle: ->
     if @hasParent()

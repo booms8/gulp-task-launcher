@@ -1,5 +1,9 @@
-# gulp-task-launcher package
+# Atom gulp-task-launcher
 
-This package runs the given gulp task (default is 'default') in the given directory (default is the project's main) and shows continuous output in a panel.
+Automatically locates a gulpfile.[js|coffee] and displays the tasks. Tasks can be executed manually or a default run-on-launch task can be specified.
 
-####Activate with `ctrl-alt-g`
+Toggle with 'ctrl-alt-g'
+
+Notes:
+ - Executing a task automatically terminates any already running task
+ - Toggle off before quitting Atom, otherwise running gulp processes will be orphaned
