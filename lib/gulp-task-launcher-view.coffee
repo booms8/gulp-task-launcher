@@ -1,7 +1,6 @@
 {View} = require 'atom-space-pen-views'
 {BufferedProcess} = require 'atom'
 fs = require 'fs'
-path = require 'path'
 Convert = require 'ansi-to-html'
 converter = new Convert()
 module.exports =
@@ -19,9 +18,7 @@ class GulpHelperView extends View
 
     @click '.tasks li.task', (event) =>
       task = event.target.textContent
-      for gulpPath, process of processes
-        if process
-          process.kill()
+      @killProc()
       for t in @tasks when t is task
         return @runGulp(task)
 
@@ -29,20 +26,21 @@ class GulpHelperView extends View
 
   destroy: ->
     @detach()
-    for gulpPath, process of processes
-      if process
-        process.kill()
+    @killProc()
 
   toggle: ->
     if @hasParent()
-      @detach()
-      for gulpPath, process of processes
-        if process
-          process.kill()
+      @destroy()
+
     else
       atom.workspace.addBottomPanel item: this
-      if not @getGulpTasks() and atom.config.get ('gulp-task-launcher.useDefault')
+      if not @getGulpTasks() and atom.config.get('gulp-task-launcher.useDefault')
         @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
+
+  killProc: ->
+    for gulpPath, process of processes
+      if process
+        process.kill()
 
   getGulpCwd: (cwd) ->
     dirs = []
@@ -71,10 +69,10 @@ class GulpHelperView extends View
 
     projpath = atom.project.getPaths()[0]
     unless @gulpCwd = @getGulpCwd(projpath)
-      @MessageArea.append "<div class='text-highighted'>Unable to find #{projpath}/**/gulpfile.[js|coffee]</div>"
+      @lineOut "text-highighted", "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
       return
 
-    @MessageArea.append "<div class='text-highighted'>Using #{@gulpCwd}/#{@gulpFile}</div>"
+    @lineOut "text-highighted", "Using #{@gulpCwd}/#{@gulpFile}"
 
     onOutput = (output) =>
       for task in output.split('\n') when task.length
@@ -87,7 +85,7 @@ class GulpHelperView extends View
       if code is 0
         for task in @tasks.sort()
           @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
-        @MessageArea.append "<div class='text-highighted'>#{@tasks.length} tasks found</div>"
+        @lineOut "text-highighted", "#{@tasks.length} tasks found"
 
       else
         @gulpExit(code)
@@ -98,7 +96,7 @@ class GulpHelperView extends View
   runGulp: (task, stdout, stderr, exit) ->
     command = 'gulp'
     args = [task, '--color']
-    @MessageArea.append "<div class='text-highighted start'>Starting #{command} #{args[0]}...</div>"
+    @lineOut "text-highighted start", "Starting #{command} #{args[0]}..."
 
     gulpPath = @gulpCwd
     options = {
@@ -111,37 +109,33 @@ class GulpHelperView extends View
 
     newProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
     newProcess.onWillThrowError (error) =>
-      @MessageArea.append "<div class='text-error'>Error starting gulp process: #{error.error.message}</div>"
+      @lineOut "text-error", "Error starting gulp process: #{error.error.message}"
       error.handle()
     processes[@gulpCwd] = newProcess;
 
     @find(".tasks li.task.running").removeClass 'running'
     @find(".tasks li.task##{task}").addClass 'running'
-
     return
 
-  setScroll: =>
+  lineOut: (type, text) ->
+    @MessageArea.append "<div class='#{type}'>#{text}</div>"
     @MessageArea.scrollTop(@MessageArea[0].scrollHeight)
     return
 
-  gulpOut: (output) =>
+  gulpOut: (output) ->
     for line in output.split("\n").filter((lineRaw) -> lineRaw isnt '')
       stream = converter.toHtml(line);
-      @MessageArea.append "<div class='text-highighted'>#{stream}</div>"
-    @setScroll()
+      @lineOut "text-highighted", stream
     return
 
-  gulpErr: (code) =>
-    @MessageArea.append "<div class='text-error'>Error Code: #{code}</div>"
-    @setScroll()
+  gulpErr: (code) ->
+    @lineOut "text-error", "Error code: #{code}"
     return
 
-  gulpExit: (code) =>
+  gulpExit: (code) ->
     if code isnt 0
-      @MessageArea.append "<div class='text-error'>Exited with error code: #{code}</div>"
-      @setScroll()
+      @lineOut "text-error", "Exited with error code: #{code}"
     else
-      @MessageArea.append "<div class='text-highighted'>Exited normally</div>"
-      @setScroll()
+      @lineOut "text-highighted", "Exited normally"
     @find(".tasks li.task.running").removeClass 'running'
     return
