@@ -5,3 +5,4 @@ Automatically locates a gulpfile.[js|coffee] and displays the tasks. Tasks can b
 Notes:
  - Toggle with 'ctrl-alt-g'
  - Executing a task automatically terminates any already running task
+ - Gulp must currently be installed locally in the same directory as the gulpfile ('npm install gulp')
