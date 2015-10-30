@@ -1,6 +1,7 @@
 {View} = require 'atom-space-pen-views'
 {BufferedProcess} = require 'atom'
 fs = require 'fs'
+path = require 'path'
 Convert = require 'ansi-to-html'
 converter = new Convert()
 module.exports =
