@@ -1,7 +1,7 @@
 {
   "name": "gulp-task-launcher",
   "main": "./lib/gulp-task-launcher",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
   "description": "Allows manual/automatic execution of gulp tasks.",
   "activationCommands": {
