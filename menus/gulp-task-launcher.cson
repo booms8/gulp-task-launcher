@@ -1,22 +1,22 @@
 'menu': [
-  {
-    'label': 'Packages'
-    'submenu': [
-      'label': 'Gulp Task'
-      'submenu': [
-        {
-          'label': 'Toggle'
-          'command': 'gulp-task-launcher:toggle'
-        }
-      ]
-    ]
-  }
+    {
+        'label': 'Packages'
+        'submenu': [
+            'label': 'Gulp Task'
+            'submenu': [
+                {
+                    'label': 'Toggle'
+                    'command': 'gulp-task-launcher:toggle'
+                }
+            ]
+        ]
+    }
 ]
 
 'context-menu':
-  'atom-text-editor': [
-    {
-      'label': 'Toggle Gulp Task'
-      'command': 'gulp-task-launcher:toggle'
-    }
-  ]
+    'atom-text-editor': [
+        {
+            'label': 'Toggle Gulp Task'
+            'command': 'gulp-task-launcher:toggle'
+        }
+    ]

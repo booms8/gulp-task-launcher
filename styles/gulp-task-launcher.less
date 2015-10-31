@@ -5,47 +5,47 @@
 @import "ui-variables";
 
 .gulp-task-launcher {
-  height: 200px;
+    height: 200px;
 
-  .messages,
-  .tasks {
-    float: left;
-    height: 100%;
-    overflow-y: scroll;
-  }
-
-  .tasks {
-    overflow-y: scroll;
-    width: 25%;
-    float: left;
-    padding: 0px;
-    margin: 0px;
-    list-style-type: none;
-
-    .task {
-      cursor: pointer;
-      padding: 5px;
-
-      &:hover,
-      &.running {
-        background: @button-background-color;
-        color: @text-color-highlight;
-      }
+    .messages,
+    .tasks {
+        float: left;
+        height: 100%;
+        overflow-y: scroll;
     }
-  }
 
-  .messages {
-      width: 75%;
+    .tasks {
+        overflow-y: scroll;
+        width: 25%;
+        float: left;
+        padding: 0px;
+        margin: 0px;
+        list-style-type: none;
 
-      div {
-        margin: 5px;
-      }
-      .text-highighted {
-        color: @text-color;
+        .task {
+            cursor: pointer;
+            padding: 5px;
 
-        &.start {
-            margin-top: 15px;
+            &:hover,
+            &.running {
+                background: @button-background-color;
+                color: @text-color-highlight;
+            }
         }
-      }
-  }
+    }
+
+    .messages {
+        width: 75%;
+
+        div {
+            margin: 5px;
+        }
+        .text-highighted {
+            color: @text-color;
+
+            &.start {
+                margin-top: 15px;
+            }
+        }
+    }
 }
