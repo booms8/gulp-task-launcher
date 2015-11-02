@@ -85,9 +85,9 @@ class GulpHelperView extends View
 
         onExit = (code) =>
             if code is 0
+                @lineOut "text-highighted", "#{@tasks.length} tasks found"
                 for task in @tasks.sort()
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
-                    @lineOut "text-highighted", "#{@tasks.length} tasks found"
 
             else
                 @gulpExit(code)
@@ -98,7 +98,8 @@ class GulpHelperView extends View
     runGulp: (task, stdout, stderr, exit) ->
         command = 'gulp'
         args = [task, '--color']
-        @lineOut "text-highighted start", "Starting #{command} #{args[0]}..."
+        unless task is '--tasks-simple'
+            @lineOut "text-highighted start", "Starting #{command} #{args[0]}..."
 
         gulpPath = @gulpCwd
         options = {
