@@ -6,8 +6,10 @@ Convert = require 'ansi-to-html'
 converter = new Convert()
 
 module.exports =
-class GulpHelperView extends View
+class gulpTaskLauncherView extends View
     processes = {}
+    curr = ''
+    prev = ''
     @content: ->
         @div =>
             @div class: "gulp-task-launcher", outlet: 'Panel', =>
@@ -29,6 +31,7 @@ class GulpHelperView extends View
     destroy: ->
         @detach()
         @killProc()
+        return
 
     toggle: ->
         if @hasParent()
@@ -38,11 +41,15 @@ class GulpHelperView extends View
             atom.workspace.addBottomPanel item: this
             if not @getGulpTasks() and atom.config.get('gulp-task-launcher.useDefault')
                 @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
+        return
 
     killProc: ->
         for gulpPath, process of processes
             if process
                 process.kill()
+                @lineOut 'text-highighted', 'Process terminated'
+        prev = curr
+        return
 
     getGulpCwd: (cwd) ->
         dirs = []
@@ -97,6 +104,7 @@ class GulpHelperView extends View
 
     runGulp: (task, stdout, stderr, exit) ->
         command = 'gulp'
+        curr = task
         args = [task, '--color']
         unless task is '--tasks-simple'
             @lineOut "text-highighted start", "Starting #{command} #{args[0]}..."
@@ -141,4 +149,5 @@ class GulpHelperView extends View
         else
             @lineOut "text-highighted", "Exited normally"
         @find(".tasks li.task.running").removeClass 'running'
+        prev = curr
         return
