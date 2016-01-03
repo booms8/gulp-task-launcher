@@ -13,8 +13,8 @@ class gulpTaskLauncherView extends View
     @content: ->
         @div =>
             @div class: "gulp-task-launcher", outlet: 'Panel', =>
-                @div class: "tasks-heading", 'Gulp Tasks'
-                @div class: "messages-heading", 'Gulp Output'
+                #@div class: "tasks-heading", 'Gulp Tasks'
+                #@div class: "messages-heading", 'Gulp Output'
                 @ul class: "tasks", outlet: 'TaskArea'
                 @div class: "messages", outlet: 'MessageArea'
 
