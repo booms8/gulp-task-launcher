@@ -7,6 +7,23 @@
 .gulp-task-launcher {
     height: 200px;
 
+    .tasks-heading,
+    .messages-heading {
+        float: left;
+        padding: 5px;
+        color: @text-color-highlight;
+        border-bottom: 1px solid @button-background-color;
+    }
+
+    .tasks-heading {
+        width: 25%;
+    }
+
+    .messages-heading {
+        width: 75%;
+        border-left: 1px solid @button-background-color;
+    }
+
     .messages,
     .tasks {
         float: left;
@@ -38,7 +55,7 @@
         div {
             margin: 5px;
         }
-        .text-highighted {
+        .text-highlighted {
             color: @text-color;
 
             &.start {

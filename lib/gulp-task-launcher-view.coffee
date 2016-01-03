@@ -13,6 +13,8 @@ class gulpTaskLauncherView extends View
     @content: ->
         @div =>
             @div class: "gulp-task-launcher", outlet: 'Panel', =>
+                @div class: "tasks-heading", 'Gulp Tasks'
+                @div class: "messages-heading", 'Gulp Output'
                 @ul class: "tasks", outlet: 'TaskArea'
                 @div class: "messages", outlet: 'MessageArea'
 
@@ -47,7 +49,7 @@ class gulpTaskLauncherView extends View
         for gulpPath, process of processes
             if process
                 process.kill()
-                @lineOut 'text-highighted', 'Process terminated'
+                @lineOut 'text-highlighted', 'Process terminated'
         prev = curr
         return
 
@@ -78,10 +80,10 @@ class gulpTaskLauncherView extends View
 
         projpath = atom.project.getPaths()[0]
         unless @gulpCwd = @getGulpCwd(projpath)
-            @lineOut "text-highighted", "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
+            @lineOut "text-highlighted", "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
             return
 
-        @lineOut "text-highighted", "Using #{@gulpCwd}/#{@gulpFile}"
+        @lineOut "text-highlighted", "Using #{@gulpCwd}/#{@gulpFile}"
 
         onOutput = (output) =>
             for task in output.split('\n') when task.length
@@ -92,7 +94,7 @@ class gulpTaskLauncherView extends View
 
         onExit = (code) =>
             if code is 0
-                @lineOut "text-highighted", "#{@tasks.length} tasks found"
+                @lineOut "text-highlighted", "#{@tasks.length} tasks found"
                 for task in @tasks.sort()
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
@@ -107,7 +109,7 @@ class gulpTaskLauncherView extends View
         curr = task
         args = [task, '--color']
         unless task is '--tasks-simple'
-            @lineOut "text-highighted start", "Starting #{command} #{args[0]}..."
+            @lineOut "text-highlighted start", "Starting #{command} #{args[0]}..."
 
         gulpPath = @gulpCwd
         options = {
@@ -136,7 +138,7 @@ class gulpTaskLauncherView extends View
     gulpOut: (output) ->
         for line in output.split("\n").filter((lineRaw) -> lineRaw isnt '')
             stream = converter.toHtml(line);
-            @lineOut "text-highighted", stream
+            @lineOut "text-highlighted", stream
         return
 
     gulpErr: (code) ->
@@ -147,7 +149,7 @@ class gulpTaskLauncherView extends View
         if code isnt 0
             @lineOut "text-error", "Exited with error code: #{code}"
         else
-            @lineOut "text-highighted", "Exited normally"
+            @lineOut "text-highlighted", "Exited normally"
         @find(".tasks li.task.running").removeClass 'running'
         prev = curr
         return
