@@ -24,8 +24,8 @@ class gulpTaskLauncherView extends View
 
         @click '.tasks li.task', (event) =>
             task = event.target.textContent
-            @killProc()
             for t in @tasks when t is task
+                @killProc()
                 return @runGulp(task)
 
     serialize: ->
