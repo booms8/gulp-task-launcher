@@ -95,7 +95,9 @@ class gulpTaskLauncherView extends View
         onExit = (code) =>
             if code is 0
                 @lineOut "text-highlighted", "#{@tasks.length} tasks found"
-                for task in @tasks.sort()
+                if atom.config.get('gulp-task-launcher.taskOrder')
+                    @tasks = @tasks.sort()
+                for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
             else
