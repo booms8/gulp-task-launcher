@@ -11,10 +11,9 @@ class gulpTaskLauncherView extends View
     curr = ''
     prev = ''
     @content: ->
-        @div =>
-            @div class: "gulp-task-launcher", outlet: 'Panel', =>
-                @ul class: "tasks", outlet: 'TaskArea'
-                @div class: "messages", outlet: 'MessageArea'
+        @div class: "gulp-task-launcher", outlet: 'Panel', =>
+            @ul class: "tasks", outlet: 'TaskArea'
+            @div class: "messages", outlet: 'MessageArea'
 
     initialize: (serializeState) ->
         atom.commands.add 'atom-workspace',
@@ -93,8 +92,10 @@ class gulpTaskLauncherView extends View
         onExit = (code) =>
             if code is 0
                 @lineOut "text-highlighted", "#{@tasks.length} tasks found"
+
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
+
                 for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
