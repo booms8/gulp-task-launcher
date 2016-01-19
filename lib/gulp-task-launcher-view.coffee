@@ -21,9 +21,15 @@ class gulpTaskLauncherView extends View
 
         @click '.tasks li.task', (event) =>
             task = event.target.textContent
-            for t in @tasks when t is task
+            if task is 'Stop Gulp'
                 @killProc()
-                return @runGulp(task)
+            else if task is 'Restart Task'
+                @killProc()
+                @runGulp(curr)
+            else
+                for t in @tasks when t is task
+                    @killProc()
+                    return @runGulp(task)
 
     serialize: ->
 
@@ -96,6 +102,8 @@ class gulpTaskLauncherView extends View
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
 
+                @TaskArea.append "<li id='stop' class='task'>Stop Gulp</li>"
+                @TaskArea.append "<li id='restart' class='task'>Restart Task</li>"
                 for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
