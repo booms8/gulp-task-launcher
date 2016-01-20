@@ -26,6 +26,9 @@ class gulpTaskLauncherView extends View
             else if task is 'Restart Task'
                 @killProc()
                 @runGulp(curr)
+            else if task is 'Run Previous'
+                @killProc()
+                @runGulp(prev)
             else
                 for t in @tasks when t is task
                     @killProc()
@@ -52,8 +55,8 @@ class gulpTaskLauncherView extends View
         for gulpPath, process of processes
             if process
                 process.kill()
+                @find(".tasks li.task.running").removeClass 'running'
                 @lineOut 'text-highlighted', 'Process terminated'
-        prev = curr
         return
 
     getGulpCwd: (cwd) ->
@@ -104,6 +107,7 @@ class gulpTaskLauncherView extends View
 
                 @TaskArea.append "<li id='stop' class='task'>Stop Gulp</li>"
                 @TaskArea.append "<li id='restart' class='task'>Restart Task</li>"
+                @TaskArea.append "<li id='previous' class='task'>Run Previous</li>"
                 for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
@@ -115,7 +119,9 @@ class gulpTaskLauncherView extends View
 
     runGulp: (task, stdout, stderr, exit) ->
         command = 'gulp'
-        curr = task
+        if curr isnt task
+            prev = curr
+            curr = task
         args = [task, '--color']
         unless task is '--tasks-simple'
             @lineOut "text-highlighted start", "Starting #{command} #{args[0]}..."
@@ -158,7 +164,6 @@ class gulpTaskLauncherView extends View
         if code isnt 0
             @lineOut "text-error", "Exited with error code: #{code}"
         else
-            @lineOut "text-highlighted", "Exited normally"
+            @lineOut "text-color-success", "Exited normally"
         @find(".tasks li.task.running").removeClass 'running'
-        prev = curr
         return

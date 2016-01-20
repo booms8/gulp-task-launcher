@@ -23,6 +23,8 @@
         .task {
             cursor: pointer;
             padding: 5px;
+            float: left;
+            width: 100%;
 
             &:hover,
             &.running {
@@ -31,8 +33,11 @@
             }
         }
         #stop,
-        #restart {
+        #restart,
+        #previous {
             color: @text-color-success;
+            //float: left;
+            width: 33.333%;
         }
     }
 
