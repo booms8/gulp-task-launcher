@@ -21,14 +21,20 @@ class gulpTaskLauncherView extends View
 
         @click '.tasks li.task', (event) =>
             task = event.target.textContent
-            if task is 'Stop Gulp'
+            if task is 'Stop'
                 @killProc()
-            else if task is 'Restart Task'
+            else if task is 'Restart'
                 @killProc()
                 @runGulp(curr)
-            else if task is 'Run Previous'
+            else if task is 'Previous'
                 @killProc()
                 @runGulp(prev)
+            else if task is 'Default'
+                @killProc()
+                if atom.config.get('gulp-task-launcher.useDefault')
+                    @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
+                else
+                    @runGulp('default')
             else
                 for t in @tasks when t is task
                     @killProc()
@@ -105,9 +111,10 @@ class gulpTaskLauncherView extends View
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
 
-                @TaskArea.append "<li id='stop' class='task'>Stop Gulp</li>"
-                @TaskArea.append "<li id='restart' class='task'>Restart Task</li>"
-                @TaskArea.append "<li id='previous' class='task'>Run Previous</li>"
+                @TaskArea.append "<li id='Stop' class='task'>Stop</li>"
+                @TaskArea.append "<li id='Restart' class='task'>Restart</li>"
+                @TaskArea.append "<li id='Previous' class='task'>Previous</li>"
+                @TaskArea.append "<li id='Default' class='task'>Default</li>"
                 for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
@@ -164,6 +171,6 @@ class gulpTaskLauncherView extends View
         if code isnt 0
             @lineOut "text-error", "Exited with error code: #{code}"
         else
-            @lineOut "text-color-success", "Exited normally"
+            @lineOut "text-success", "Exited normally"
         @find(".tasks li.task.running").removeClass 'running'
         return
