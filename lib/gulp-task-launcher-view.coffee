@@ -24,21 +24,14 @@ class gulpTaskLauncherView extends View
             if task is 'Stop'
                 @killProc()
             else if task is 'Restart'
-                @killProc()
-                @runGulp(curr)
+                @run(curr)
             else if task is 'Previous'
-                @killProc()
-                @runGulp(prev)
+                @run(prev)
             else if task is 'Default'
-                @killProc()
-                if atom.config.get('gulp-task-launcher.useDefault')
-                    @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
-                else
-                    @runGulp('default')
+                @runDefault()
             else
                 for t in @tasks when t is task
-                    @killProc()
-                    return @runGulp(task)
+                    return @run(task)
 
     serialize: ->
 
@@ -111,10 +104,12 @@ class gulpTaskLauncherView extends View
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
 
-                @TaskArea.append "<li id='Stop' class='task'>Stop</li>"
-                @TaskArea.append "<li id='Restart' class='task'>Restart</li>"
-                @TaskArea.append "<li id='Previous' class='task'>Previous</li>"
-                @TaskArea.append "<li id='Default' class='task'>Default</li>"
+                @TaskArea.append "<li>
+                                    <div id='Stop' class='task'>Stop</div>
+                                    <div id='Restart' class='task'>Restart</div>
+                                    <div id='Previous' class='task'>Previous</div>
+                                    <div id='Default' class='task'>Default</div>
+                                  </li>"
                 for task in @tasks
                     @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
 
@@ -123,6 +118,10 @@ class gulpTaskLauncherView extends View
 
         @runGulp '--tasks-simple', onOutput, onError, onExit
         return
+
+    run: (task) ->
+        @killProc()
+        @runGulp(task)
 
     runGulp: (task, stdout, stderr, exit) ->
         command = 'gulp'
@@ -151,6 +150,12 @@ class gulpTaskLauncherView extends View
         @find(".tasks li.task.running").removeClass 'running'
         @find(".tasks li.task##{task}").addClass 'running'
         return
+
+    runDefault: ->
+        if atom.config.get('gulp-task-launcher.useDefault')
+            @run(atom.config.get('gulp-task-launcher.runCommand'))
+        else
+            @run('default')
 
     lineOut: (type, text) ->
         @MessageArea.append "<div class='#{type}'>#{text}</div>"
