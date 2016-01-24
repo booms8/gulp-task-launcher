@@ -21,21 +21,21 @@ class gulpTaskLauncherView extends View
 
         @click '.tasks li.task', (event) =>
             task = event.target.textContent
-            if task is 'Stop'
-                @killProc()
-            else if task is 'Restart'
-                @run(curr)
-            else if task is 'Previous'
-                @run(prev)
-            else if task is 'Default'
-                @runDefault()
-            else
-                for t in @tasks when t is task
-                    return @run(task)
+
+            switch task
+                when 'Stop' then @killProc()
+                when 'Restart' then @run(curr)
+                when 'Previous' then @run(prev)
+                when 'Default' then @runDefault()
+                else
+                    for t in @tasks when t is task
+                        return @run(task)
 
     serialize: ->
 
     destroy: ->
+        for w in @watchers
+            w.dispose()
         @detach()
         @killProc()
         return
@@ -80,7 +80,7 @@ class gulpTaskLauncherView extends View
 
     getGulpTasks: ->
         @tasks = []
-        @TaskArea.html("")
+        @watchers = []
         @MessageArea.html("")
 
         projpath = atom.project.getPaths()[0]
@@ -103,21 +103,42 @@ class gulpTaskLauncherView extends View
 
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
+                @buildTaskList()
 
-                @TaskArea.append "<li>
-                                    <div id='Stop' class='task'>Stop</div>
-                                    <div id='Restart' class='task'>Restart</div>
-                                    <div id='Previous' class='task'>Previous</div>
-                                    <div id='Default' class='task'>Default</div>
-                                  </li>"
                 for task in @tasks
-                    @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
+                    watch = atom.config.onDidChange "gulp-task-launcher.#{task}", ({newValue, previous}) => @buildTaskList()
+                    @watchers.push watch
 
             else
                 @gulpExit(code)
 
         @runGulp '--tasks-simple', onOutput, onError, onExit
         return
+
+    buildTaskList: ->
+        existingTasks = atom.config.get('gulp-task-launcher.tasks')
+
+        @TaskArea.html("")
+        @TaskArea.append "<li>
+                            <div id='Stop' class='task'>Stop</div>
+                            <div id='Restart' class='task'>Restart</div>
+                            <div id='Previous' class='task'>Previous</div>
+                            <div id='Default' class='task'>Default</div>
+                          </li>"
+
+        for task in existingTasks
+            if @tasks.indexOf(task) is -1
+                atom.config.unset("gulp-task-launcher.#{task}")
+                existingTasks = existingTasks.filter (t) -> t isnt task
+
+        for task in @tasks
+            if atom.config.get("gulp-task-launcher.#{task}") is undefined
+                existingTasks.push task
+                atom.config.set("gulp-task-launcher.#{task}", true)
+                @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
+            else if atom.config.get("gulp-task-launcher.#{task}")
+                @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
+        atom.config.set('gulp-task-launcher.tasks', existingTasks)
 
     run: (task) ->
         @killProc()

@@ -21,7 +21,15 @@
         list-style-type: none;
 
         li {
-            min-width: 200px
+            min-width: 200px;
+
+            #Stop,
+            #Restart,
+            #Previous,
+            #Default {
+                color: @text-color-success;
+                width: 25%;
+            }
         }
 
         .task {
@@ -35,14 +43,6 @@
                 background: @button-background-color;
                 color: @text-color-highlight;
             }
-        }
-
-        #Stop,
-        #Restart,
-        #Previous,
-        #Default {
-            color: @text-color-success;
-            width: 25%;
         }
     }
 
