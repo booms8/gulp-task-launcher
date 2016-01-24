@@ -130,6 +130,7 @@ class gulpTaskLauncherView extends View
             if @tasks.indexOf(task) is -1
                 atom.config.unset("gulp-task-launcher.#{task}")
                 existingTasks = existingTasks.filter (t) -> t isnt task
+                @watchers[@watchers.indexOf(task)].dispose()
 
         for task in @tasks
             if atom.config.get("gulp-task-launcher.#{task}") is undefined
