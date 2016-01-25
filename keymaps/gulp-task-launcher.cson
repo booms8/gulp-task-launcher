@@ -8,4 +8,8 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 'atom-workspace':
-  'ctrl-alt-g': 'gulp-task-launcher:toggle'
+  'cmd-alt-g': 'gulp-task-launcher:toggle'
+  'cmd-alt-s': 'gulp-task-launcher:stop'
+  'cmd-alt-r': 'gulp-task-launcher:restart'
+  'cmd-alt-p': 'gulp-task-launcher:previous'
+  'cmd-alt-d': 'gulp-task-launcher:default'

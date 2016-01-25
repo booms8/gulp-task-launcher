@@ -7,6 +7,22 @@
                 {
                     'label': 'Toggle',
                     'command': 'gulp-task-launcher:toggle'
+                },
+                {
+                    'label': 'Stop',
+                    'command': 'gulp-task-launcher:stop'
+                },
+                {
+                    'label': 'Restart',
+                    'command': 'gulp-task-launcher:restart'
+                },
+                {
+                    'label': 'Previous',
+                    'command': 'gulp-task-launcher:previous'
+                },
+                {
+                    'label': 'Default',
+                    'command': 'gulp-task-launcher:default'
                 }
             ]
         ]
@@ -21,6 +37,22 @@
                 {
                     'label': 'Toggle',
                     'command': 'gulp-task-launcher:toggle'
+                },
+                {
+                    'label': 'Stop',
+                    'command': 'gulp-task-launcher:stop'
+                },
+                {
+                    'label': 'Restart',
+                    'command': 'gulp-task-launcher:restart'
+                },
+                {
+                    'label': 'Previous',
+                    'command': 'gulp-task-launcher:previous'
+                },
+                {
+                    'label': 'Default',
+                    'command': 'gulp-task-launcher:default'
                 }
             ]
         }

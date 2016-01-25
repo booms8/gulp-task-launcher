@@ -18,6 +18,14 @@ class gulpTaskLauncherView extends View
     initialize: (serializeState) ->
         atom.commands.add 'atom-workspace',
             "gulp-task-launcher:toggle": => @toggle()
+        atom.commands.add 'atom-workspace',
+            "gulp-task-launcher:stop": => @killProc()
+        atom.commands.add 'atom-workspace',
+            "gulp-task-launcher:restart": => @run(curr)
+        atom.commands.add 'atom-workspace',
+            "gulp-task-launcher:previous": => @run(prev)
+        atom.commands.add 'atom-workspace',
+            "gulp-task-launcher:default": => @runDefault()
 
         @click '.tasks li.task', (event) =>
             task = event.target.textContent
@@ -75,7 +83,6 @@ class gulpTaskLauncherView extends View
         for dir in dirs
             if found = @getGulpCwd(dir)
                 return found
-
         return
 
     getGulpTasks: ->
@@ -140,10 +147,12 @@ class gulpTaskLauncherView extends View
             else if atom.config.get("gulp-task-launcher.#{task}")
                 @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
         atom.config.set('gulp-task-launcher.tasks', existingTasks)
+        return
 
     run: (task) ->
         @killProc()
         @runGulp(task)
+        return
 
     runGulp: (task, stdout, stderr, exit) ->
         command = 'gulp'
@@ -178,6 +187,7 @@ class gulpTaskLauncherView extends View
             @run(atom.config.get('gulp-task-launcher.runCommand'))
         else
             @run('default')
+        return
 
     lineOut: (type, text) ->
         @MessageArea.append "<div class='#{type}'>#{text}</div>"
