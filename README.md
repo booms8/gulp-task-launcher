@@ -1,6 +1,6 @@
 # Atom gulp-task-launcher
 
-Automatically locates a gulpfile.[js|coffee] and displays the tasks. Tasks can be hidden from the interactable listing (such as those that should never be started individually). Tasks can be executed manually or a default run-on-launch task can be specified.
+Automatically locates a gulpfile.[js|coffee] and imports the tasks. Tasks can be hidden from the interactable listing (such as those that should never be started individually). Tasks can be executed manually or a default run-on-launch task can be specified.
 
 Features:
  - Toggle with `cmd-alt-g`
