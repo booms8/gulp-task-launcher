@@ -9,7 +9,7 @@ Features:
  - Uncheck tasks on the settings page to hide them from the task pane
 
 
- Limitations:
+Limitations:
  - Settings pane cannot be updated in real time; reload Atom (`ctrl-alt-r`) if the tasks list isn't correct
  - Settings are not project-specific, i.e. using the plugin on a second project will wipe out the configuration for the first (This will hopefully be fixed soon)
  - Gulp must currently be installed locally in the same directory as the gulpfile (`npm install gulp`)
