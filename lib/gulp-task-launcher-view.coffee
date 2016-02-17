@@ -66,6 +66,13 @@ class gulpTaskLauncherView extends View
                 @lineOut 'text-highlighted', 'Process terminated'
         return
 
+    fileExists: (path) ->
+        try
+            fs.statSync(path)
+        catch e
+            return false
+        return true
+
     getGulpCwd: (cwd) ->
         dirs = []
 
@@ -77,7 +84,7 @@ class gulpTaskLauncherView extends View
 
             else if entry.indexOf('node_modules') is -1
                 abs = path.join(cwd, entry)
-                if fs.statSync(abs).isDirectory()
+                if @fileExists abs and fs.statSync(abs).isDirectory()
                     dirs.push abs
 
         for dir in dirs
@@ -132,6 +139,12 @@ class gulpTaskLauncherView extends View
                             <div id='Previous' class='task'>Previous</div>
                             <div id='Default' class='task'>Default</div>
                           </li>"
+
+        #@gulpCache = @gulpCwd + '/.atom-gulp-cache'
+        #if !@fileExists(@gulpCache)
+        #    @lineOut "text-highlighted", "Found saved settings file #{@gulpCache}"
+        #else
+        #    @lineOut "text-highlighted", "Generating new settings file #{@gulpCache}"
 
         for task in existingTasks
             if @tasks.indexOf(task) is -1
