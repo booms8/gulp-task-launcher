@@ -4,6 +4,7 @@ class Palette
 
     addTask: (task) ->
         @taskArea.append "<li id='#{task}' class='task'>#{task}</li>"
+        return
 
     buildTaskList: (tasks, watchers) ->
         existingTasks = atom.config.get('gulp-task-launcher.tasks')

@@ -74,8 +74,7 @@ class GulpTaskLauncherView extends View
         @watchers = []
         @console.reset()
 
-        projpath = atom.project.getPaths()[0]
-        unless @gulpCwd = files.getGulpCwd(projpath)
+        unless @gulpCwd = files.getGulpCwd(atom.project.getPaths()[0])
             @console.print "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
             return
 

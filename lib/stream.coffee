@@ -7,6 +7,7 @@ class Stream
 
     reset: ->
         @outputStream.html("")
+        return
 
     printType: (type, text) ->
         @outputStream.append "<div class='#{type}'>#{text}</div>"
