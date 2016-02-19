@@ -1,6 +1,6 @@
 {View} = require 'atom-space-pen-views'
 {BufferedProcess} = require 'atom'
-utils = require './utils'
+files = require './files'
 Stream = require './stream'
 Palette = require './palette'
 
@@ -75,7 +75,7 @@ class GulpTaskLauncherView extends View
         @console.reset()
 
         projpath = atom.project.getPaths()[0]
-        unless @gulpCwd = utils.getGulpCwd(projpath)
+        unless @gulpCwd = files.getGulpCwd(projpath)
             @console.print "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
             return
 
