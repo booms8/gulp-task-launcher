@@ -1,4 +1,4 @@
-gulpTaskLauncherView = require './gulp-task-launcher-view'
+GulpTaskLauncherView = require './gulp-task-launcher-view'
 
 module.exports =
     gulpTaskLauncherView: null
@@ -30,7 +30,7 @@ module.exports =
                 type: 'string'
 
     activate: (state) ->
-        @gulpTaskLauncherView = new gulpTaskLauncherView(state.gulpTaskLauncherViewState)
+        @gulpTaskLauncherView = new GulpTaskLauncherView(state.gulpTaskLauncherViewState)
 
     deactivate: ->
         @gulpTaskLauncherView.destroy()

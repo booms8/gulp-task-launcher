@@ -1,12 +1,11 @@
 {View} = require 'atom-space-pen-views'
 {BufferedProcess} = require 'atom'
-fs = require 'fs'
-path = require 'path'
-Convert = require 'ansi-to-html'
-converter = new Convert()
+utils = require './utils'
+Stream = require './stream'
+Palette = require './palette'
 
 module.exports =
-class gulpTaskLauncherView extends View
+class GulpTaskLauncherView extends View
     processes = {}
     curr = ''
     prev = ''
@@ -54,6 +53,8 @@ class gulpTaskLauncherView extends View
 
         else
             atom.workspace.addBottomPanel item: this
+            @console = new Stream(@MessageArea)
+            @palette = new Palette(@TaskArea)
             if not @getGulpTasks() and atom.config.get('gulp-task-launcher.useDefault')
                 @runGulp(atom.config.get('gulp-task-launcher.runCommand'))
         return
@@ -63,104 +64,44 @@ class gulpTaskLauncherView extends View
             if process
                 process.kill()
                 @find(".tasks li.task.running").removeClass 'running'
-                @lineOut 'text-highlighted', 'Process terminated'
-        return
-
-    fileExists: (path) ->
-        try
-            fs.statSync(path)
-        catch e
-            return false
-        return true
-
-    getGulpCwd: (cwd) ->
-        dirs = []
-
-        gfregx = /^gulpfile(\.babel)?\.(js|coffee)/i
-        for entry in fs.readdirSync(cwd) when entry.indexOf('.') isnt 0
-            if gfregx.test(entry)
-                @gulpFile = entry
-                return cwd
-
-            else if entry.indexOf('node_modules') is -1
-                abs = path.join(cwd, entry)
-                if @fileExists abs and fs.statSync(abs).isDirectory()
-                    dirs.push abs
-
-        for dir in dirs
-            if found = @getGulpCwd(dir)
-                return found
+                @console.print 'Process terminated'
         return
 
     getGulpTasks: ->
         @tasks = []
         @watchers = []
-        @MessageArea.html("")
+        @console.reset()
 
         projpath = atom.project.getPaths()[0]
-        unless @gulpCwd = @getGulpCwd(projpath)
-            @lineOut "text-highlighted", "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
+        unless @gulpCwd = utils.getGulpCwd(projpath)
+            @console.print "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
             return
 
-        @lineOut "text-highlighted", "Using #{@gulpCwd}/#{@gulpFile}"
+        @console.print "Gulpfile found in #{@gulpCwd}"
 
         onOutput = (output) =>
             for task in output.split('\n') when task.length
                 @tasks.push task
 
         onError = (output) =>
-            @gulpErr(output)
+            @console.gulpErr output
 
         onExit = (code) =>
             if code is 0
-                @lineOut "text-highlighted", "#{@tasks.length} tasks found"
+                @console.print "#{@tasks.length} tasks found"
 
                 if atom.config.get('gulp-task-launcher.taskOrder')
                     @tasks = @tasks.sort()
-                @buildTaskList()
+                @palette.buildTaskList(@tasks, @watchers)
 
                 for task in @tasks
-                    watch = atom.config.onDidChange "gulp-task-launcher.#{task}", ({newValue, previous}) => @buildTaskList()
+                    watch = atom.config.onDidChange "gulp-task-launcher.#{task}", ({newValue, previous}) => @palette.buildTaskList()
                     @watchers.push watch
 
             else
-                @gulpExit(code)
+                @console.gulpExit(code)
 
         @runGulp '--tasks-simple', onOutput, onError, onExit
-        return
-
-    buildTaskList: ->
-        existingTasks = atom.config.get('gulp-task-launcher.tasks')
-
-        @TaskArea.html("")
-        @TaskArea.append "<li>
-                            <div id='Stop' class='task'>Stop</div>
-                            <div id='Restart' class='task'>Restart</div>
-                            <div id='Previous' class='task'>Previous</div>
-                            <div id='Default' class='task'>Default</div>
-                          </li>"
-
-        #@gulpCache = @gulpCwd + '/.atom-gulp-cache'
-        #if !@fileExists(@gulpCache)
-        #    @lineOut "text-highlighted", "Found saved settings file #{@gulpCache}"
-        #else
-        #    @lineOut "text-highlighted", "Generating new settings file #{@gulpCache}"
-
-        for task in existingTasks
-            if @tasks.indexOf(task) is -1
-                atom.config.unset("gulp-task-launcher.#{task}")
-                existingTasks = existingTasks.filter (t) -> t isnt task
-                if @watchers.indexOf(task) isnt -1
-                    @watchers[@watchers.indexOf(task)].dispose()
-
-        for task in @tasks
-            if atom.config.get("gulp-task-launcher.#{task}") is undefined
-                existingTasks.push task
-                atom.config.set("gulp-task-launcher.#{task}", true)
-                @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
-            else if atom.config.get("gulp-task-launcher.#{task}")
-                @TaskArea.append "<li id='#{task}' class='task'>#{task}</li>"
-        atom.config.set('gulp-task-launcher.tasks', existingTasks)
         return
 
     run: (task) ->
@@ -175,20 +116,20 @@ class gulpTaskLauncherView extends View
             curr = task
         args = [task, '--color']
         unless task is '--tasks-simple'
-            @lineOut "text-highlighted start", "Starting #{command} #{args[0]}..."
+            @console.printType "text-highlighted start", "Starting #{command} #{args[0]}..."
 
         gulpPath = @gulpCwd
         options = {
             cwd: @gulpCwd
         }
 
-        stdout or= (output) => @gulpOut(output)
-        stderr or= (code) => @gulpErr(code)
-        exit or= (code) => @gulpExit(code)
+        stdout or= (output) => @console.gulpOut(output)
+        stderr or= (code) => @console.gulpErr(code)
+        exit or= (code) => @exit(code)
 
         newProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
         newProcess.onWillThrowError (error) =>
-            @lineOut "text-error", "Error starting gulp process: #{error.error.message}"
+            @console.printError "Error starting gulp process: #{error.error.message}"
             error.handle()
         processes[@gulpCwd] = newProcess;
 
@@ -203,25 +144,6 @@ class gulpTaskLauncherView extends View
             @run('default')
         return
 
-    lineOut: (type, text) ->
-        @MessageArea.append "<div class='#{type}'>#{text}</div>"
-        @MessageArea.scrollTop(@MessageArea[0].scrollHeight)
-        return
-
-    gulpOut: (output) ->
-        for line in output.split("\n").filter((lineRaw) -> lineRaw isnt '')
-            stream = converter.toHtml(line);
-            @lineOut "text-highlighted", stream
-        return
-
-    gulpErr: (code) ->
-        @lineOut "text-error", "Error code: #{code}"
-        return
-
-    gulpExit: (code) ->
-        if code isnt 0
-            @lineOut "text-error", "Exited with error code: #{code}"
-        else
-            @lineOut "text-success", "Exited normally"
+    exit: (code) ->
+        @console.gulpExit(code)
         @find(".tasks li.task.running").removeClass 'running'
-        return
