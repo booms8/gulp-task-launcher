@@ -9,6 +9,7 @@ class GulpTaskLauncherView extends View
     processes = {}
     curr = ''
     prev = ''
+    prevEnded = true
     @content: ->
         @div class: "gulp-task-launcher", outlet: 'Panel', =>
             @ul class: "tasks", outlet: 'TaskArea'
@@ -64,7 +65,8 @@ class GulpTaskLauncherView extends View
             if process
                 process.kill()
                 @find(".tasks li.task.running").removeClass 'running'
-                @console.print 'Process terminated'
+                if not prevEnded
+                    @console.print 'Process terminated'
         return
 
     getGulpTasks: ->
@@ -110,12 +112,14 @@ class GulpTaskLauncherView extends View
         return
 
     runGulp: (task, stdout, stderr, exit) ->
-        command = 'gulp'
         if curr isnt task
             prev = curr
             curr = task
+
+        command = 'gulp'
         args = [task, '--color']
         unless task is '--tasks-simple'
+            prevEnded = false
             @console.printType "text-highlighted start", "Starting #{command} #{args[0]}..."
 
         gulpPath = @gulpCwd
@@ -146,4 +150,6 @@ class GulpTaskLauncherView extends View
 
     exit: (code) ->
         @console.gulpExit(code)
+        prevEnded = true
         @find(".tasks li.task.running").removeClass 'running'
+        return
