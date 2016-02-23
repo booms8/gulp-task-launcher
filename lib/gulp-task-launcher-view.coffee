@@ -137,8 +137,12 @@ class GulpTaskLauncherView extends View
             error.handle()
         processes[@gulpCwd] = newProcess;
 
+        jTask = task.replace /(:|\.|\[|\]|,)/g, (chr) => return "\\" + chr
+        @console.print jTask
+
         @find(".tasks li.task.running").removeClass 'running'
-        @find(".tasks li.task##{task.replace /:/, "\\:"}").addClass 'running'
+        #@find(".tasks li.task##{task.replace /:/, "\\:"}").addClass 'running'
+        @find(".tasks li.task##{jTask}").addClass 'running'
         return
 
     runDefault: ->
