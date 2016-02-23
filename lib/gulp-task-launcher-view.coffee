@@ -19,7 +19,7 @@ class GulpTaskLauncherView extends View
         atom.commands.add 'atom-workspace',
             "gulp-task-launcher:toggle": => @toggle()
         atom.commands.add 'atom-workspace',
-            "gulp-task-launcher:stop": => @killProc()
+            "gulp-task-launcher:stop": => @stop()
         atom.commands.add 'atom-workspace',
             "gulp-task-launcher:restart": => @run(curr)
         atom.commands.add 'atom-workspace',
@@ -31,7 +31,7 @@ class GulpTaskLauncherView extends View
             task = event.target.textContent
 
             switch task
-                when 'Stop' then @killProc()
+                when 'Stop' then @stop()
                 when 'Restart' then @run(curr)
                 when 'Previous' then @run(prev)
                 when 'Default' then @runDefault()
@@ -67,6 +67,11 @@ class GulpTaskLauncherView extends View
                 @find(".tasks li.task.running").removeClass 'running'
                 if not prevEnded
                     @console.print 'Process terminated'
+        return
+
+    stop: ->
+        @killProc()
+        prevEnded = true
         return
 
     getGulpTasks: ->
