@@ -82,7 +82,6 @@ class GulpTaskLauncherView extends View
 
         onOutput = (output) =>
             for task in output.split('\n') when task.length
-                task.replace /\:/, "&#58;"
                 @tasks.push task
 
         onError = (output) =>
