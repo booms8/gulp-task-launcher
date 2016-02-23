@@ -82,6 +82,7 @@ class GulpTaskLauncherView extends View
 
         onOutput = (output) =>
             for task in output.split('\n') when task.length
+                task.replace /\:/, "&#58;"
                 @tasks.push task
 
         onError = (output) =>
@@ -137,7 +138,7 @@ class GulpTaskLauncherView extends View
         processes[@gulpCwd] = newProcess;
 
         @find(".tasks li.task.running").removeClass 'running'
-        @find(".tasks li.task##{task}").addClass 'running'
+        @find(".tasks li.task##{task.replace /:/, "\\:"}").addClass 'running'
         return
 
     runDefault: ->
