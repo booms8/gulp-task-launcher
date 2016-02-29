@@ -1,9 +1,10 @@
 fs = require 'fs'
+path = require 'path'
 
 module.exports =
-    fileExists: (path) ->
+    fileExists: (filePath) ->
         try
-            fs.statSync(path)
+            fs.statSync(filePath)
         catch e
             return false
         return true
