@@ -80,7 +80,7 @@ class GulpTaskLauncherView extends View
         @console.reset()
 
         unless @gulpCwd = files.getGulpCwd(atom.project.getPaths()[0])
-            @console.print "Unable to find #{projpath}/**/gulpfile.[js|coffee]"
+            console.print "Unable to find gulpfile in #{atom.project.getPaths[0]}"
             return
 
         @console.print "Gulpfile found in #{@gulpCwd}"
