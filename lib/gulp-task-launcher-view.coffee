@@ -101,7 +101,7 @@ class GulpTaskLauncherView extends View
                 @palette.buildTaskList(@tasks, @watchers)
 
                 for task in @tasks
-                    watch = atom.config.onDidChange "gulp-task-launcher.#{task}", ({newValue, previous}) => @palette.buildTaskList()
+                    watch = atom.config.onDidChange "gulp-task-launcher.#{task}", ({newValue, previous}) => @palette.buildTaskList(@tasks, @watchers);
                     @watchers.push watch
 
             else
