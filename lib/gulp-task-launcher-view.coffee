@@ -4,6 +4,7 @@ files = require './files'
 Stream = require './stream'
 Palette = require './palette'
 
+
 module.exports =
 class GulpTaskLauncherView extends View
     processes = {}
