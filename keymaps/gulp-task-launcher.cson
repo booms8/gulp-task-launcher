@@ -1,0 +1,15 @@
+# Keybindings require three things to be fully defined: A selector that is
+# matched against the focused element, the keystroke and the command to
+# execute.
+#
+# Below is a basic keybinding which registers on all platforms by applying to
+# the root workspace element.
+
+# For more detailed documentation see
+# https://atom.io/docs/latest/advanced/keymaps
+'atom-workspace':
+  'cmd-alt-g': 'gulp-task-launcher:toggle'
+  'cmd-alt-s': 'gulp-task-launcher:stop'
+  'cmd-alt-r': 'gulp-task-launcher:restart'
+  'cmd-alt-p': 'gulp-task-launcher:previous'
+  'cmd-alt-d': 'gulp-task-launcher:default'
